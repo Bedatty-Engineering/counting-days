@@ -70,16 +70,42 @@
         layer.append(flake);
       }
 
-      [[2, 18, 39], [97, 24, 30], [2, 62, 35], [97, 58, 43], [12, 7, 25], [88, 85, 28]].forEach(([x, y, size], index) => {
-        const tree = document.createElement('span');
-        tree.className = 'holiday-tree';
-        tree.textContent = '🎄';
-        tree.style.setProperty('--x', `${x}%`);
-        tree.style.setProperty('--y', `${y}%`);
-        tree.style.setProperty('--size', `${size}px`);
-        tree.style.setProperty('--delay', `${index * -0.45}s`);
-        layer.append(tree);
+      const lights = document.createElement('div');
+      lights.className = 'christmas-lights';
+      lights.setAttribute('aria-hidden', 'true');
+      const bulbColors = ['#ff5964', '#ffd166', '#4ecdc4', '#8ca7ff', '#f5f7c8'];
+      for (let index = 0; index < 24; index += 1) {
+        const bulb = document.createElement('span');
+        bulb.className = 'christmas-bulb';
+        bulb.style.setProperty('--x', `${2 + index * 4.2}%`);
+        bulb.style.setProperty('--hang', `${Math.round(7 + Math.sin(index * 0.65) * 7)}px`);
+        bulb.style.setProperty('--bulb-color', bulbColors[index % bulbColors.length]);
+        bulb.style.setProperty('--delay', `${index * -0.19}s`);
+        lights.append(bulb);
+      }
+      layer.append(lights);
+
+      const garland = document.createElement('div');
+      garland.className = 'christmas-garland';
+      garland.setAttribute('aria-hidden', 'true');
+      for (let index = 0; index < 52; index += 1) {
+        const needle = document.createElement('span');
+        needle.className = 'garland-needle';
+        needle.style.setProperty('--x', `${index * 1.95}%`);
+        needle.style.setProperty('--sway', `${Math.sin(index * 0.22) * 13}px`);
+        needle.style.setProperty('--turn', `${index % 2 === 0 ? -34 : 34}deg`);
+        needle.style.setProperty('--green', index % 3 === 0 ? '#245a36' : '#347548');
+        garland.append(needle);
+      }
+      [7, 19, 31, 44, 57, 70, 83, 95].forEach((position, index) => {
+        const ornament = document.createElement('span');
+        ornament.className = 'garland-ornament';
+        ornament.style.setProperty('--x', `${position}%`);
+        ornament.style.setProperty('--ornament-color', ['#c93642', '#d5a63b', '#347e9a', '#c93642'][index % 4]);
+        ornament.style.setProperty('--delay', `${index * -0.32}s`);
+        garland.append(ornament);
       });
+      layer.append(garland);
       mountEffect();
       return;
     }
