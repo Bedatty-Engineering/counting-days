@@ -43,4 +43,4 @@ The calendar reads the visitor's local date directly in the browser, so the disp
 
 ## License
 
-Licensed under the [GNU General Public License v3.0 only](LICENSE) (`GPL-3.0-only`).
+Copyright (C) 2026 Lucas C. Bedatty. Licensed under the [GNU General Public License v3.0 only](LICENSE) (`GPL-3.0-only`).
