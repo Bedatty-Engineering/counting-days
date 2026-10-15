@@ -2,7 +2,8 @@ name: Update daily calendar
 
 on:
   schedule:
-    - cron: '5 3 * * *'
+    # GitHub Actions schedules use UTC: 09:00 and 20:00 are 06:00 and 17:00 in São Paulo.
+    - cron: '0 9,20 * * *'
   workflow_dispatch:
 
 permissions:

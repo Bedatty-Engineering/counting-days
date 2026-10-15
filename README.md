@@ -24,7 +24,7 @@ Then open <http://localhost:8000>.
 
 ## Daily update
 
-The `daily-calendar` workflow runs every day at **03:05 UTC**. It writes the date in the `America/Sao_Paulo` time zone to `data/current-day.json` and creates a signed commit only when the file changes. You can also start the workflow manually from the **Actions** tab.
+The `daily-calendar` workflow runs every day at **06:00 and 17:00 São Paulo time**. It writes the date and update time in the `America/Sao_Paulo` time zone to `data/current-day.json` and creates a signed commit for each run, including runs on the same day. You can also start the workflow manually from the **Actions** tab.
 
 Configure these repository Actions secrets:
 
