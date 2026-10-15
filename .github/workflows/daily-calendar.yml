@@ -20,10 +20,8 @@ jobs:
         env:
           USER_TOKEN: ${{ secrets.USER_TOKEN }}
           SSH_SIGNING_KEY: ${{ secrets.SSH_SIGNING_KEY }}
-          COMMIT_AUTHOR_NAME: ${{ secrets.COMMIT_AUTHOR_NAME }}
-          COMMIT_AUTHOR_EMAIL: ${{ secrets.COMMIT_AUTHOR_EMAIL }}
         run: |
-          for secret_name in USER_TOKEN SSH_SIGNING_KEY COMMIT_AUTHOR_NAME COMMIT_AUTHOR_EMAIL; do
+          for secret_name in USER_TOKEN SSH_SIGNING_KEY; do
             if [ -z "${!secret_name}" ]; then
               echo "Required repository secret is missing: $secret_name"
               exit 1
@@ -43,9 +41,9 @@ jobs:
 
       - name: Commit if the date changed
         env:
+          USER_TOKEN: ${{ secrets.USER_TOKEN }}
           SSH_SIGNING_KEY: ${{ secrets.SSH_SIGNING_KEY }}
-          COMMIT_AUTHOR_NAME: ${{ secrets.COMMIT_AUTHOR_NAME }}
-          COMMIT_AUTHOR_EMAIL: ${{ secrets.COMMIT_AUTHOR_EMAIL }}
+          GITHUB_API_URL: ${{ github.api_url }}
         run: |
           if git diff --quiet -- data/current-day.json; then
             echo "The date is already up to date."
@@ -55,8 +53,21 @@ jobs:
           signing_key="$RUNNER_TEMP/ssh-signing-key"
           printf '%s\n' "$SSH_SIGNING_KEY" > "$signing_key"
           chmod 600 "$signing_key"
-          git config user.name "$COMMIT_AUTHOR_NAME"
-          git config user.email "$COMMIT_AUTHOR_EMAIL"
+
+          authenticated_user=$(curl --fail --silent --show-error \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $USER_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "$GITHUB_API_URL/user")
+          author_login=$(printf '%s' "$authenticated_user" | jq -r '.login // empty')
+          author_id=$(printf '%s' "$authenticated_user" | jq -r '.id // empty')
+          if [ -z "$author_login" ] || [ -z "$author_id" ]; then
+            echo "Could not determine the authenticated GitHub user."
+            exit 1
+          fi
+
+          git config user.name "$author_login"
+          git config user.email "${author_id}+${author_login}@users.noreply.github.com"
           git config gpg.format ssh
           git config user.signingkey "$signing_key"
           git config commit.gpgsign true
