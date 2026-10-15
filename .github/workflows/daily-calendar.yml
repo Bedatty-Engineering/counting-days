@@ -19,9 +19,9 @@ jobs:
       - name: Check required repository secrets
         env:
           USER_TOKEN: ${{ secrets.USER_TOKEN }}
-          SSH_SIGNING_KEY: ${{ secrets.SSH_SIGNING_KEY }}
+          USER_SSH_SIGNING_KEY: ${{ secrets.USER_SSH_SIGNING_KEY }}
         run: |
-          for secret_name in USER_TOKEN SSH_SIGNING_KEY; do
+          for secret_name in USER_TOKEN USER_SSH_SIGNING_KEY; do
             if [ -z "${!secret_name}" ]; then
               echo "Required repository secret is missing: $secret_name"
               exit 1
@@ -42,7 +42,7 @@ jobs:
       - name: Commit if the date changed
         env:
           USER_TOKEN: ${{ secrets.USER_TOKEN }}
-          SSH_SIGNING_KEY: ${{ secrets.SSH_SIGNING_KEY }}
+          USER_SSH_SIGNING_KEY: ${{ secrets.USER_SSH_SIGNING_KEY }}
           GITHUB_API_URL: ${{ github.api_url }}
         run: |
           if git diff --quiet -- data/current-day.json; then
@@ -51,7 +51,7 @@ jobs:
           fi
 
           signing_key="$RUNNER_TEMP/ssh-signing-key"
-          printf '%s\n' "$SSH_SIGNING_KEY" > "$signing_key"
+          printf '%s\n' "$USER_SSH_SIGNING_KEY" > "$signing_key"
           chmod 600 "$signing_key"
 
           authenticated_user=$(curl --fail --silent --show-error \
