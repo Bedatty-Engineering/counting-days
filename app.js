@@ -4,7 +4,6 @@
   let displayedMonth = new Date(today.getFullYear(), today.getMonth(), 1);
   const monthTitle = document.querySelector('#month-title');
   const grid = document.querySelector('#calendar-grid');
-  const calendarStage = document.querySelector('.calendar-stage');
   const todayLabel = document.querySelector('#today-date');
   const dayOfYear = document.querySelector('#day-of-year');
   const seasonalNote = document.querySelector('#seasonal-note');
@@ -52,7 +51,7 @@
     layer.className = 'seasonal-effect';
     layer.setAttribute('aria-hidden', 'true');
     const mountEffect = () => {
-      calendarStage.append(layer);
+      document.body.append(layer);
       if (holiday.season !== 'christmas' && holiday.season !== 'new-year') {
         window.setTimeout(() => layer.remove(), 10000);
       }
@@ -63,8 +62,7 @@
         const flake = document.createElement('span');
         flake.className = 'seasonal-particle snowflake';
         flake.textContent = '❄';
-        const edgeX = Math.random() < 0.5 ? 1 + Math.random() * 4 : 95 + Math.random() * 4;
-        flake.style.setProperty('--x', `${edgeX}%`);
+        flake.style.setProperty('--x', `${Math.random() * 100}%`);
         flake.style.setProperty('--drift', `${Math.round(Math.random() * 150 - 75)}px`);
         flake.style.setProperty('--size', `${12 + Math.random() * 18}px`);
         flake.style.setProperty('--duration', `${7 + Math.random() * 12}s`);
@@ -72,11 +70,11 @@
         layer.append(flake);
       }
 
-      [[0, 20, 39], [1, 24, 30], [0, 62, 35], [1, 58, 43]].forEach(([side, y, size], index) => {
+      [[2, 18, 39], [97, 24, 30], [2, 62, 35], [97, 58, 43], [12, 7, 25], [88, 85, 28]].forEach(([x, y, size], index) => {
         const tree = document.createElement('span');
         tree.className = 'holiday-tree';
         tree.textContent = '🎄';
-        tree.style.setProperty('--x', side === 0 ? 'var(--tree-edge)' : 'calc(100% - var(--tree-edge))');
+        tree.style.setProperty('--x', `${x}%`);
         tree.style.setProperty('--y', `${y}%`);
         tree.style.setProperty('--size', `${size}px`);
         tree.style.setProperty('--delay', `${index * -0.45}s`);
@@ -88,7 +86,7 @@
 
     if (holiday.season === 'new-year') {
       const colors = ['#ffd166', '#ff5c8a', '#55d6be', '#83aaff', '#ffffff'];
-      const burstPositions = [[13, 6], [35, 4], [64, 5], [87, 6], [2, 35], [2, 70], [98, 35], [98, 70], [28, 94], [76, 94]];
+      const burstPositions = [[12, 12], [35, 25], [64, 9], [88, 40], [9, 66], [24, 88], [52, 16], [72, 83], [92, 16], [80, 57]];
       burstPositions.forEach(([x, y], burstIndex) => {
         const burst = document.createElement('div');
         burst.className = 'firework';
@@ -121,8 +119,7 @@
       const particle = document.createElement('span');
       particle.className = 'seasonal-particle';
       particle.textContent = symbols[index % symbols.length];
-      const edgeX = Math.random() < 0.5 ? 1 + Math.random() * 4 : 95 + Math.random() * 4;
-      particle.style.setProperty('--x', `${edgeX}%`);
+      particle.style.setProperty('--x', `${Math.random() * 100}%`);
       particle.style.setProperty('--drift', `${Math.round(Math.random() * 120 - 60)}px`);
       particle.style.setProperty('--duration', `${8 + Math.random() * 9}s`);
       particle.style.setProperty('--delay', `${Math.random() * -16}s`);

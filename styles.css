@@ -15,7 +15,7 @@
 body { margin: 0; background: var(--paper); color: var(--ink); font-family: 'DM Sans', sans-serif; }
 button, a { font: inherit; }
 button:focus-visible, a:focus-visible { outline: 3px solid var(--brand-cyan); outline-offset: 4px; }
-.page-shell { width: min(1080px, calc(100% - 56px)); margin: 0 auto; }
+.page-shell { position: relative; z-index: 2; width: min(1080px, calc(100% - 56px)); margin: 0 auto; }
 .topline { height: 80px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
 .brand-lockup { display: inline-flex; align-items: center; gap: 11px; color: var(--ink); text-decoration: none; }
 .brand-lockup:focus-visible, .page-footer a:focus-visible { outline: 3px solid var(--brand-cyan); outline-offset: 4px; }
@@ -41,8 +41,7 @@ h1 span { color: var(--brand-blue); }
 .progress-caption { margin-top: 5px; }
 .progress-track { height: 3px; margin: 15px 0 8px; background: #d8e0e9; }
 .progress-track i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--brand-blue), var(--brand-cyan)); transition: width .3s ease; }
-.calendar-stage { position: relative; isolation: isolate; margin-bottom: 16px; }
-.calendar-panel { position: relative; z-index: 2; padding: 28px 34px 20px; background: var(--white); border: 1px solid #e3e8ef; }
+.calendar-panel { padding: 28px 34px 20px; background: var(--white); border: 1px solid #e3e8ef; }
 .calendar-heading { display: flex; justify-content: space-between; align-items: end; padding-bottom: 22px; }
 .calendar-heading .eyebrow { margin-bottom: 6px; }
 h2 { margin: 0; font-size: 27px; line-height: 1.1; font-weight: 600; letter-spacing: -1.3px; text-transform: capitalize; }
@@ -66,7 +65,7 @@ h2 { margin: 0; font-size: 27px; line-height: 1.1; font-weight: 600; letter-spac
 .day-cell.holiday-valentines { --holiday-color: #d45173; }
 .day-cell.holiday-halloween { --holiday-color: #d97832; }
 .day-cell.holiday-easter { --holiday-color: #8b70c7; }
-.seasonal-effect { --tree-edge: 34px; position: absolute; z-index: 1; inset: -28px -68px; overflow: hidden; pointer-events: none; }
+.seasonal-effect { position: fixed; z-index: 1; inset: 0; overflow: hidden; pointer-events: none; }
 .seasonal-effect::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 0% 0%, var(--season-glow), transparent 48%), radial-gradient(ellipse at 100% 12%, var(--season-glow), transparent 44%), radial-gradient(ellipse at 48% 100%, var(--season-glow), transparent 52%); animation: seasonal-glow 5s ease-in-out infinite alternate; }
 .seasonal-particle { position: absolute; top: -8vh; left: var(--x); color: var(--season-color, #4bb7e8); font-size: 15px; opacity: .48; animation: seasonal-fall var(--duration) var(--delay) linear infinite; }
 .snowflake { color: #f5fcff; opacity: .92; text-shadow: 0 0 10px #8ac9ef; }
@@ -109,7 +108,6 @@ body[data-season='christmas'] .seasonal-particle { color: #8bb9d7; }
 .sync-status { color: #939caa; }
 
 @media (max-width: 760px) {
-  .seasonal-effect { --tree-edge: 8px; inset: -28px -16px; }
   .page-shell { width: min(100% - 36px, 560px); }
   .brand-lockup { gap: 8px; }
   .brand-mark { width: 36px; height: 36px; }
