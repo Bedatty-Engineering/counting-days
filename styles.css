@@ -28,6 +28,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--brand-cyan); ou
 .intro { display: grid; grid-template-columns: 1fr 2.1fr .75fr; gap: 30px; align-items: end; padding: 69px 0 52px; }
 .eyebrow { margin: 0 0 13px; color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: .055em; }
 .today-date { margin: 0; font: 700 clamp(23px, 3vw, 34px)/1.15 'Manrope', sans-serif; letter-spacing: -1.7px; text-transform: capitalize; }
+.seasonal-note { display: inline-block; margin: 10px 0 0; padding: 5px 9px; border: 1px solid var(--season-color, #d8dfe8); color: var(--season-color, var(--brand-blue)); font-size: 11px; font-weight: 600; }
+.seasonal-note[hidden] { display: none; }
 .intro-copy { padding-left: 12px; }
 h1, h2 { font-family: 'Manrope', sans-serif; }
 h1 { margin: 0; font-size: clamp(32px, 4.2vw, 51px); line-height: 1.08; letter-spacing: -2.8px; font-weight: 600; }
@@ -56,6 +58,27 @@ h2 { margin: 0; font-size: 27px; line-height: 1.1; font-weight: 600; letter-spac
 .day-cell.outside-month { color: #aeb8c5; }
 .day-cell.today { color: #fff; font-weight: 700; }
 .day-cell.today::before { content: ''; position: absolute; z-index: 0; width: 34px; height: 34px; border-radius: 50%; background: var(--brand-blue); }
+.day-cell.holiday::after { content: ''; position: absolute; bottom: 9px; width: 4px; height: 4px; border-radius: 50%; background: var(--holiday-color, var(--brand-cyan)); }
+.day-cell.today.holiday::after { bottom: 6px; background: #fff; }
+.day-cell.holiday-christmas { --holiday-color: #26845a; }
+.day-cell.holiday-new-year { --holiday-color: #d19a32; }
+.day-cell.holiday-valentines { --holiday-color: #d45173; }
+.day-cell.holiday-halloween { --holiday-color: #d97832; }
+.day-cell.holiday-easter { --holiday-color: #8b70c7; }
+.seasonal-effect { position: fixed; z-index: 5; inset: 0; overflow: hidden; pointer-events: none; }
+.seasonal-particle { position: absolute; top: -8vh; left: var(--x); color: var(--season-color, #4bb7e8); font-size: 15px; opacity: .48; animation: seasonal-fall var(--duration) var(--delay) linear infinite; }
+@keyframes seasonal-fall {
+  from { transform: translate3d(0, -5vh, 0) rotate(0deg); }
+  to { transform: translate3d(var(--drift), 115vh, 0) rotate(360deg); }
+}
+body[data-season='christmas'] { --season-color: #388e68; }
+body[data-season='new-year'] { --season-color: #c39131; }
+body[data-season='valentines'] { --season-color: #ce5f7c; }
+body[data-season='halloween'] { --season-color: #d97832; }
+body[data-season='easter'] { --season-color: #8b70c7; }
+body[data-season='new-year'] .seasonal-particle { font-size: 19px; opacity: .58; }
+body[data-season='christmas'] .seasonal-particle { color: #8bb9d7; }
+body[data-season='halloween'] .seasonal-particle { font-size: 19px; }
 .day-cell span { position: relative; z-index: 1; }
 .calendar-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 13px; margin-top: 3px; color: var(--muted); font-size: 11px; }
 .calendar-footer > span:first-child { display: flex; align-items: center; gap: 8px; }
@@ -89,4 +112,5 @@ h2 { margin: 0; font-size: 27px; line-height: 1.1; font-weight: 600; letter-spac
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+  .seasonal-effect { display: none; }
 }
