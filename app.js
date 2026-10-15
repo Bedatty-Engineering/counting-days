@@ -72,7 +72,7 @@
 
       const lights = document.createElement('img');
       lights.className = 'christmas-lights';
-      lights.src = 'https://openclipart.org/image/2000px/205912';
+      lights.src = 'assets/seasonal/christmas-lights.png';
       lights.alt = '';
       lights.addEventListener('error', () => { lights.hidden = true; }, { once: true });
       lights.setAttribute('aria-hidden', 'true');
@@ -82,9 +82,10 @@
       decorations.className = 'christmas-decorations';
       decorations.setAttribute('aria-hidden', 'true');
       [
-        ['christmas-decoration tree-decoration tree-decoration-left', 'https://openclipart.org/image/2000px/325866'],
-        ['christmas-decoration presents-decoration', 'https://openclipart.org/image/2000px/281813'],
-        ['christmas-decoration tree-decoration tree-decoration-right', 'https://openclipart.org/image/2000px/325866']
+        ['christmas-decoration tree-decoration tree-decoration-left', 'assets/seasonal/christmas-tree-with-presents.png'],
+        ['christmas-decoration presents-decoration presents-decoration-left', 'assets/seasonal/colorful-presents.png'],
+        ['christmas-decoration presents-decoration presents-decoration-right', 'assets/seasonal/colorful-presents.png'],
+        ['christmas-decoration tree-decoration tree-decoration-right', 'assets/seasonal/christmas-tree-with-presents.png']
       ].forEach(([className, source]) => {
         const decoration = document.createElement('img');
         decoration.className = className;

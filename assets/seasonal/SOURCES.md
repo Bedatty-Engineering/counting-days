@@ -1,9 +1,9 @@
 # Seasonal image sources
 
-The Christmas decorations use PNG renderings hosted by Openclipart:
+These locally bundled Christmas PNGs are from ClipSafari and are marked CC0:
 
-- Christmas lights by finchweb: https://openclipart.org/detail/205912/christmas-lights
-- Decorated Christmas tree with gifts by Juhele: https://openclipart.org/detail/325866/decorated-christmas-tree-with-gifts
-- Presents by Firkin: https://openclipart.org/detail/281813/presents
+- `christmas-lights.png`: [String of Christmas Lights](https://www.clipsafari.com/clips/o205912-string-of-christmas-lights), by finchweb.
+- `christmas-tree-with-presents.png`: [Christmas Tree With Presents](https://www.clipsafari.com/clips/o245219-christmas-tree-with-presents), by GDJ.
+- `colorful-presents.png`: [Colorful Presents](https://www.clipsafari.com/clips/o98539-colorful-presents), by kattekrab.
 
-Openclipart states that uploads are released under CC0 1.0. See its [FAQ](https://openclipart.org/share?lang=en) and the [CC0 deed](https://creativecommons.org/publicdomain/zero/1.0/).
+The [CC0 deed](https://creativecommons.org/publicdomain/zero/1.0/) dedicates the works to the public domain.
