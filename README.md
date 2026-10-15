@@ -1,6 +1,6 @@
 <table><tr>
 <td><img src="https://github.com/Bedatty-Engineering.png" alt="Bedatty Engineering" width="80" /></td>
-<td><h1>counting-days</h1></td>
+<td><h1>Counting Days</h1></td>
 </tr></table>
 
 An endless calendar that highlights today's local date and tracks the year's progress. Browse months with no fixed end date. [Open the live calendar](https://calendar.bedatty.com/).
