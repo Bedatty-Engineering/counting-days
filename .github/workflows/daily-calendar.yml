@@ -1,0 +1,65 @@
+name: Update daily calendar
+
+on:
+  schedule:
+    - cron: '5 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-calendar
+  cancel-in-progress: false
+
+jobs:
+  update-day:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check required repository secrets
+        env:
+          USER_TOKEN: ${{ secrets.USER_TOKEN }}
+          SSH_SIGNING_KEY: ${{ secrets.SSH_SIGNING_KEY }}
+          COMMIT_AUTHOR_NAME: ${{ secrets.COMMIT_AUTHOR_NAME }}
+          COMMIT_AUTHOR_EMAIL: ${{ secrets.COMMIT_AUTHOR_EMAIL }}
+        run: |
+          for secret_name in USER_TOKEN SSH_SIGNING_KEY COMMIT_AUTHOR_NAME COMMIT_AUTHOR_EMAIL; do
+            if [ -z "${!secret_name}" ]; then
+              echo "Required repository secret is missing: $secret_name"
+              exit 1
+            fi
+          done
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.USER_TOKEN }}
+
+      - name: Update calendar date
+        run: |
+          date_value=$(TZ=America/Sao_Paulo date +%F)
+          updated_value=$(TZ=America/Sao_Paulo date --iso-8601=seconds)
+          printf '{\n  "date": "%s",\n  "updatedAt": "%s"\n}\n' "$date_value" "$updated_value" > data/current-day.json
+
+      - name: Commit if the date changed
+        env:
+          SSH_SIGNING_KEY: ${{ secrets.SSH_SIGNING_KEY }}
+          COMMIT_AUTHOR_NAME: ${{ secrets.COMMIT_AUTHOR_NAME }}
+          COMMIT_AUTHOR_EMAIL: ${{ secrets.COMMIT_AUTHOR_EMAIL }}
+        run: |
+          if git diff --quiet -- data/current-day.json; then
+            echo "The date is already up to date."
+            exit 0
+          fi
+
+          signing_key="$RUNNER_TEMP/ssh-signing-key"
+          printf '%s\n' "$SSH_SIGNING_KEY" > "$signing_key"
+          chmod 600 "$signing_key"
+          git config user.name "$COMMIT_AUTHOR_NAME"
+          git config user.email "$COMMIT_AUTHOR_EMAIL"
+          git config gpg.format ssh
+          git config user.signingkey "$signing_key"
+          git config commit.gpgsign true
+          git add data/current-day.json
+          git commit -S -m "chore: update daily calendar"
+          git push

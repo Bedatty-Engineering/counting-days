@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f3f0e7" />
+    <meta name="description" content="A calendar that follows every day, with no end date." />
+    <title>Every Day — an endless calendar</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="topline">
+        <a class="wordmark" href="." aria-label="Every Day, home">every<span>day</span></a>
+        <span class="living-indicator"><i></i> ongoing</span>
+      </header>
+
+      <section class="intro" aria-labelledby="page-title">
+        <div class="today-block">
+          <p class="eyebrow" id="today-label">Today is</p>
+          <p class="today-date" id="today-date" aria-live="polite">—</p>
+        </div>
+        <div class="intro-copy">
+          <p class="eyebrow">One day at a time</p>
+          <h1 id="page-title">Time moves on.<br /><span>This calendar does too.</span></h1>
+          <p class="lede">Every day has its place. Keep going; there is no last page.</p>
+        </div>
+        <div class="year-progress" aria-label="Year progress">
+          <span class="progress-number" id="day-of-year">—</span>
+          <span class="progress-caption">day of the year</span>
+          <div class="progress-track"><i id="year-progress"></i></div>
+          <span class="year-caption" id="year-caption">—</span>
+        </div>
+      </section>
+
+      <section class="calendar-panel" aria-label="Calendar">
+        <div class="calendar-heading">
+          <div>
+            <p class="eyebrow">Your calendar</p>
+            <h2 id="month-title" aria-live="polite">—</h2>
+          </div>
+          <div class="calendar-controls">
+            <button class="today-button" id="go-today" type="button">Today</button>
+            <button class="arrow-button" id="previous-month" type="button" aria-label="Previous month"><span aria-hidden="true">←</span></button>
+            <button class="arrow-button" id="next-month" type="button" aria-label="Next month"><span aria-hidden="true">→</span></button>
+          </div>
+        </div>
+        <div class="weekday-row" aria-hidden="true">
+          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
+        <div class="calendar-grid" id="calendar-grid" role="grid" aria-label="Days of the month"></div>
+        <footer class="calendar-footer">
+          <span><i class="legend-dot"></i> today</span>
+          <span class="footer-note">No required start. No ending in sight.</span>
+        </footer>
+      </section>
+
+      <footer class="page-footer">
+        <span>The next day always comes.</span>
+        <span class="sync-status" id="sync-status">Live calendar</span>
+      </footer>
+    </main>
+  </body>
+</html>
