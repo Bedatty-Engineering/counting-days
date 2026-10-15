@@ -3,16 +3,27 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#f3f0e7" />
+    <meta name="theme-color" content="#f3f5f8" />
     <meta name="description" content="A calendar that follows every day, with no end date." />
+    <meta property="og:site_name" content="Bedatty Engineering" />
+    <meta property="og:title" content="Every Day — a Bedatty Engineering calendar" />
+    <meta property="og:description" content="A calendar that follows every day, with no end date." />
+    <meta property="og:url" content="https://calendar.bedatty.com/" />
     <title>Every Day — an endless calendar</title>
+    <link rel="canonical" href="https://calendar.bedatty.com/" />
+    <link rel="icon" type="image/png" href="assets/bedatty-engineering.png" />
     <link rel="stylesheet" href="styles.css" />
     <script src="app.js" defer></script>
   </head>
   <body>
     <main class="page-shell">
       <header class="topline">
-        <a class="wordmark" href="." aria-label="Every Day, home">every<span>day</span></a>
+        <a class="brand-lockup" href="https://github.com/Bedatty-Engineering" aria-label="Bedatty Engineering — Every Day calendar">
+          <img class="brand-mark" src="assets/bedatty-engineering.png" alt="" />
+          <span class="brand-name">Bedatty Engineering</span>
+          <span class="brand-divider" aria-hidden="true"></span>
+          <span class="project-name">Every Day</span>
+        </a>
         <span class="living-indicator"><i></i> ongoing</span>
       </header>
 
@@ -57,7 +68,7 @@
       </section>
 
       <footer class="page-footer">
-        <span>The next day always comes.</span>
+        <span>A calendar by <a href="https://bedatty.com">Bedatty Engineering</a></span>
         <span class="sync-status" id="sync-status">Live calendar</span>
       </footer>
     </main>
