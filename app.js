@@ -4,6 +4,7 @@
   let displayedMonth = new Date(today.getFullYear(), today.getMonth(), 1);
   const monthTitle = document.querySelector('#month-title');
   const grid = document.querySelector('#calendar-grid');
+  const calendarPanel = document.querySelector('.calendar-panel');
   const todayLabel = document.querySelector('#today-date');
   const dayOfYear = document.querySelector('#day-of-year');
   const seasonalNote = document.querySelector('#seasonal-note');
@@ -74,7 +75,8 @@
         tree.style.setProperty('--delay', `${index * -0.45}s`);
         layer.append(tree);
       });
-      document.body.append(layer);
+      calendarPanel.append(layer);
+      window.setTimeout(() => layer.remove(), 10000);
       return;
     }
 
@@ -98,7 +100,8 @@
         }
         layer.append(burst);
       });
-      document.body.append(layer);
+      calendarPanel.append(layer);
+      window.setTimeout(() => layer.remove(), 10000);
       return;
     }
 
@@ -117,7 +120,8 @@
       particle.style.setProperty('--delay', `${Math.random() * -16}s`);
       layer.append(particle);
     }
-    document.body.append(layer);
+    calendarPanel.append(layer);
+    window.setTimeout(() => layer.remove(), 10000);
   }
 
   showSeasonalEffect(holidayFor(today));
