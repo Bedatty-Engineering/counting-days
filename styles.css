@@ -68,6 +68,17 @@ h2 { margin: 0; font-size: 27px; line-height: 1.1; font-weight: 600; letter-spac
 .seasonal-effect { position: fixed; z-index: 5; inset: 0; overflow: hidden; pointer-events: none; }
 .seasonal-effect::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 0% 0%, var(--season-glow), transparent 48%), radial-gradient(ellipse at 100% 12%, var(--season-glow), transparent 44%), radial-gradient(ellipse at 48% 100%, var(--season-glow), transparent 52%); animation: seasonal-glow 5s ease-in-out infinite alternate; }
 .seasonal-particle { position: absolute; top: -8vh; left: var(--x); color: var(--season-color, #4bb7e8); font-size: 15px; opacity: .48; animation: seasonal-fall var(--duration) var(--delay) linear infinite; }
+.snowflake { color: #f5fcff; opacity: .92; text-shadow: 0 0 10px #8ac9ef; }
+.holiday-tree { position: absolute; left: var(--x); bottom: var(--bottom); font-size: var(--size); opacity: .88; filter: drop-shadow(0 0 12px #61b87980); animation: tree-glow 2.6s var(--delay) ease-in-out infinite alternate; }
+.firework { position: absolute; left: var(--x); top: var(--y); width: 0; height: 0; }
+.firework i { position: absolute; left: -4px; top: -4px; display: block; width: 8px; height: 8px; border-radius: 50%; background: var(--burst-color); box-shadow: 0 0 16px 4px var(--burst-color); animation: fireworks-burst 2.8s var(--delay) ease-out infinite; }
+@keyframes fireworks-burst {
+  0% { transform: rotate(var(--angle)) translateY(0) scale(.15); opacity: 0; }
+  12% { opacity: 1; }
+  72% { transform: rotate(var(--angle)) translateY(var(--distance)) scale(1); opacity: 1; }
+  100% { transform: rotate(var(--angle)) translateY(var(--distance-end)) scale(.25); opacity: 0; }
+}
+@keyframes tree-glow { from { opacity: .58; } to { opacity: 1; } }
 @keyframes seasonal-glow { from { opacity: .28; } to { opacity: .78; } }
 @keyframes seasonal-fall {
   from { transform: translate3d(0, -5vh, 0) rotate(0deg); }
@@ -78,9 +89,7 @@ body[data-season='new-year'] { --season-color: #c39131; --season-glow: #e2b33d30
 body[data-season='valentines'] { --season-color: #ce5f7c; --season-glow: #e56d9126; }
 body[data-season='halloween'] { --season-color: #d97832; --season-glow: #ec812c26; }
 body[data-season='easter'] { --season-color: #8b70c7; --season-glow: #a98bea26; }
-body[data-season='new-year'] .seasonal-particle { font-size: 19px; opacity: .58; }
 body[data-season='christmas'] .seasonal-particle { color: #8bb9d7; }
-body[data-season='halloween'] .seasonal-particle { font-size: 19px; }
 .day-cell span { position: relative; z-index: 1; }
 .calendar-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 13px; margin-top: 3px; color: var(--muted); font-size: 11px; }
 .calendar-footer > span:first-child { display: flex; align-items: center; gap: 8px; }

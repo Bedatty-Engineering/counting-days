@@ -47,16 +47,66 @@
     seasonalNote.hidden = false;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+    const layer = document.createElement('div');
+    layer.className = 'seasonal-effect';
+    layer.setAttribute('aria-hidden', 'true');
+
+    if (holiday.season === 'christmas') {
+      for (let index = 0; index < 48; index += 1) {
+        const flake = document.createElement('span');
+        flake.className = 'seasonal-particle snowflake';
+        flake.textContent = '❄';
+        flake.style.setProperty('--x', `${Math.random() * 100}%`);
+        flake.style.setProperty('--drift', `${Math.round(Math.random() * 150 - 75)}px`);
+        flake.style.setProperty('--size', `${12 + Math.random() * 18}px`);
+        flake.style.setProperty('--duration', `${7 + Math.random() * 12}s`);
+        flake.style.setProperty('--delay', `${Math.random() * -18}s`);
+        layer.append(flake);
+      }
+
+      [[3, 5, 39], [13, 11, 30], [82, 7, 35], [94, 4, 43], [24, 3, 25], [73, 2, 28]].forEach(([x, bottom, size], index) => {
+        const tree = document.createElement('span');
+        tree.className = 'holiday-tree';
+        tree.textContent = '🎄';
+        tree.style.setProperty('--x', `${x}%`);
+        tree.style.setProperty('--bottom', `${bottom}%`);
+        tree.style.setProperty('--size', `${size}px`);
+        tree.style.setProperty('--delay', `${index * -0.45}s`);
+        layer.append(tree);
+      });
+      document.body.append(layer);
+      return;
+    }
+
+    if (holiday.season === 'new-year') {
+      const colors = ['#ffd166', '#ff5c8a', '#55d6be', '#83aaff', '#ffffff'];
+      const burstPositions = [[12, 24], [34, 16], [58, 30], [82, 19], [93, 43], [43, 48]];
+      burstPositions.forEach(([x, y], burstIndex) => {
+        const burst = document.createElement('div');
+        burst.className = 'firework';
+        burst.style.setProperty('--x', `${x}%`);
+        burst.style.setProperty('--y', `${y}%`);
+        for (let index = 0; index < 18; index += 1) {
+          const spark = document.createElement('i');
+          const distance = 62 + Math.random() * 58;
+          spark.style.setProperty('--angle', `${index * 20}deg`);
+          spark.style.setProperty('--distance', `-${distance}px`);
+          spark.style.setProperty('--distance-end', `-${distance * 1.2}px`);
+          spark.style.setProperty('--burst-color', colors[(index + burstIndex) % colors.length]);
+          spark.style.setProperty('--delay', `${burstIndex * 0.43 + Math.random() * 0.4}s`);
+          burst.append(spark);
+        }
+        layer.append(burst);
+      });
+      document.body.append(layer);
+      return;
+    }
+
     const symbols = {
-      christmas: ['❄', '✦'],
-      'new-year': ['✦', '•'],
       valentines: ['♥', '♡'],
       halloween: ['🎃', '·'],
       easter: ['✿', '·']
     }[holiday.season];
-    const layer = document.createElement('div');
-    layer.className = 'seasonal-effect';
-    layer.setAttribute('aria-hidden', 'true');
     for (let index = 0; index < 24; index += 1) {
       const particle = document.createElement('span');
       particle.className = 'seasonal-particle';
