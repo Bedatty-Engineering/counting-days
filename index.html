@@ -46,27 +46,29 @@
         </div>
       </section>
 
-      <section class="calendar-panel" aria-label="Calendar">
-        <div class="calendar-heading">
-          <div>
-            <p class="eyebrow">Your calendar</p>
-            <h2 id="month-title" aria-live="polite">—</h2>
+      <div class="calendar-stage">
+        <section class="calendar-panel" aria-label="Calendar">
+          <div class="calendar-heading">
+            <div>
+              <p class="eyebrow">Your calendar</p>
+              <h2 id="month-title" aria-live="polite">—</h2>
+            </div>
+            <div class="calendar-controls">
+              <button class="today-button" id="go-today" type="button">Today</button>
+              <button class="arrow-button" id="previous-month" type="button" aria-label="Previous month"><span aria-hidden="true">←</span></button>
+              <button class="arrow-button" id="next-month" type="button" aria-label="Next month"><span aria-hidden="true">→</span></button>
+            </div>
           </div>
-          <div class="calendar-controls">
-            <button class="today-button" id="go-today" type="button">Today</button>
-            <button class="arrow-button" id="previous-month" type="button" aria-label="Previous month"><span aria-hidden="true">←</span></button>
-            <button class="arrow-button" id="next-month" type="button" aria-label="Next month"><span aria-hidden="true">→</span></button>
+          <div class="weekday-row" aria-hidden="true">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
           </div>
-        </div>
-        <div class="weekday-row" aria-hidden="true">
-          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-        </div>
-        <div class="calendar-grid" id="calendar-grid" role="grid" aria-label="Days of the month"></div>
-        <footer class="calendar-footer">
-          <span><i class="legend-dot"></i> today</span>
-          <span class="footer-note">No required start. No ending in sight.</span>
-        </footer>
-      </section>
+          <div class="calendar-grid" id="calendar-grid" role="grid" aria-label="Days of the month"></div>
+          <footer class="calendar-footer">
+            <span><i class="legend-dot"></i> today</span>
+            <span class="footer-note">No required start. No ending in sight.</span>
+          </footer>
+        </section>
+      </div>
 
       <footer class="page-footer">
         <span>A calendar by <a href="https://bedatty.com">Bedatty Engineering</a></span>

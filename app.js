@@ -4,7 +4,7 @@
   let displayedMonth = new Date(today.getFullYear(), today.getMonth(), 1);
   const monthTitle = document.querySelector('#month-title');
   const grid = document.querySelector('#calendar-grid');
-  const calendarPanel = document.querySelector('.calendar-panel');
+  const calendarStage = document.querySelector('.calendar-stage');
   const todayLabel = document.querySelector('#today-date');
   const dayOfYear = document.querySelector('#day-of-year');
   const seasonalNote = document.querySelector('#seasonal-note');
@@ -51,13 +51,20 @@
     const layer = document.createElement('div');
     layer.className = 'seasonal-effect';
     layer.setAttribute('aria-hidden', 'true');
+    const mountEffect = () => {
+      calendarStage.append(layer);
+      if (holiday.season !== 'christmas' && holiday.season !== 'new-year') {
+        window.setTimeout(() => layer.remove(), 10000);
+      }
+    };
 
     if (holiday.season === 'christmas') {
       for (let index = 0; index < 48; index += 1) {
         const flake = document.createElement('span');
         flake.className = 'seasonal-particle snowflake';
         flake.textContent = '❄';
-        flake.style.setProperty('--x', `${Math.random() * 100}%`);
+        const edgeX = Math.random() < 0.5 ? 1 + Math.random() * 4 : 95 + Math.random() * 4;
+        flake.style.setProperty('--x', `${edgeX}%`);
         flake.style.setProperty('--drift', `${Math.round(Math.random() * 150 - 75)}px`);
         flake.style.setProperty('--size', `${12 + Math.random() * 18}px`);
         flake.style.setProperty('--duration', `${7 + Math.random() * 12}s`);
@@ -65,29 +72,30 @@
         layer.append(flake);
       }
 
-      [[3, 5, 39], [13, 11, 30], [82, 7, 35], [94, 4, 43], [24, 3, 25], [73, 2, 28]].forEach(([x, bottom, size], index) => {
+      [[0, 20, 39], [1, 24, 30], [0, 62, 35], [1, 58, 43]].forEach(([side, y, size], index) => {
         const tree = document.createElement('span');
         tree.className = 'holiday-tree';
         tree.textContent = '🎄';
-        tree.style.setProperty('--x', `${x}%`);
-        tree.style.setProperty('--bottom', `${bottom}%`);
+        tree.style.setProperty('--x', side === 0 ? 'var(--tree-edge)' : 'calc(100% - var(--tree-edge))');
+        tree.style.setProperty('--y', `${y}%`);
         tree.style.setProperty('--size', `${size}px`);
         tree.style.setProperty('--delay', `${index * -0.45}s`);
         layer.append(tree);
       });
-      calendarPanel.append(layer);
-      window.setTimeout(() => layer.remove(), 10000);
+      mountEffect();
       return;
     }
 
     if (holiday.season === 'new-year') {
       const colors = ['#ffd166', '#ff5c8a', '#55d6be', '#83aaff', '#ffffff'];
-      const burstPositions = [[12, 24], [34, 16], [58, 30], [82, 19], [93, 43], [43, 48]];
+      const burstPositions = [[13, 6], [35, 4], [64, 5], [87, 6], [2, 35], [2, 70], [98, 35], [98, 70], [28, 94], [76, 94]];
       burstPositions.forEach(([x, y], burstIndex) => {
         const burst = document.createElement('div');
         burst.className = 'firework';
         burst.style.setProperty('--x', `${x}%`);
         burst.style.setProperty('--y', `${y}%`);
+        const burstDelay = Math.random() * 0.7;
+        burst.style.setProperty('--launch-delay', `${burstDelay}s`);
         for (let index = 0; index < 18; index += 1) {
           const spark = document.createElement('i');
           const distance = 62 + Math.random() * 58;
@@ -95,13 +103,12 @@
           spark.style.setProperty('--distance', `-${distance}px`);
           spark.style.setProperty('--distance-end', `-${distance * 1.2}px`);
           spark.style.setProperty('--burst-color', colors[(index + burstIndex) % colors.length]);
-          spark.style.setProperty('--delay', `${burstIndex * 0.43 + Math.random() * 0.4}s`);
+          spark.style.setProperty('--delay', `${burstDelay + 0.38 + Math.random() * 0.18}s`);
           burst.append(spark);
         }
         layer.append(burst);
       });
-      calendarPanel.append(layer);
-      window.setTimeout(() => layer.remove(), 10000);
+      mountEffect();
       return;
     }
 
@@ -114,14 +121,14 @@
       const particle = document.createElement('span');
       particle.className = 'seasonal-particle';
       particle.textContent = symbols[index % symbols.length];
-      particle.style.setProperty('--x', `${Math.random() * 100}%`);
+      const edgeX = Math.random() < 0.5 ? 1 + Math.random() * 4 : 95 + Math.random() * 4;
+      particle.style.setProperty('--x', `${edgeX}%`);
       particle.style.setProperty('--drift', `${Math.round(Math.random() * 120 - 60)}px`);
       particle.style.setProperty('--duration', `${8 + Math.random() * 9}s`);
       particle.style.setProperty('--delay', `${Math.random() * -16}s`);
       layer.append(particle);
     }
-    calendarPanel.append(layer);
-    window.setTimeout(() => layer.remove(), 10000);
+    mountEffect();
   }
 
   showSeasonalEffect(holidayFor(today));
