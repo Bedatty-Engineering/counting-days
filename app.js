@@ -70,42 +70,30 @@
         layer.append(flake);
       }
 
-      const lights = document.createElement('div');
+      const lights = document.createElement('img');
       lights.className = 'christmas-lights';
+      lights.src = 'https://openclipart.org/image/2000px/205912';
+      lights.alt = '';
+      lights.addEventListener('error', () => { lights.hidden = true; }, { once: true });
       lights.setAttribute('aria-hidden', 'true');
-      const bulbColors = ['#ff5964', '#ffd166', '#4ecdc4', '#8ca7ff', '#f5f7c8'];
-      for (let index = 0; index < 24; index += 1) {
-        const bulb = document.createElement('span');
-        bulb.className = 'christmas-bulb';
-        bulb.style.setProperty('--x', `${2 + index * 4.2}%`);
-        bulb.style.setProperty('--hang', `${Math.round(7 + Math.sin(index * 0.65) * 7)}px`);
-        bulb.style.setProperty('--bulb-color', bulbColors[index % bulbColors.length]);
-        bulb.style.setProperty('--delay', `${index * -0.19}s`);
-        lights.append(bulb);
-      }
       layer.append(lights);
 
-      const garland = document.createElement('div');
-      garland.className = 'christmas-garland';
-      garland.setAttribute('aria-hidden', 'true');
-      for (let index = 0; index < 52; index += 1) {
-        const needle = document.createElement('span');
-        needle.className = 'garland-needle';
-        needle.style.setProperty('--x', `${index * 1.95}%`);
-        needle.style.setProperty('--sway', `${Math.sin(index * 0.22) * 13}px`);
-        needle.style.setProperty('--turn', `${index % 2 === 0 ? -34 : 34}deg`);
-        needle.style.setProperty('--green', index % 3 === 0 ? '#245a36' : '#347548');
-        garland.append(needle);
-      }
-      [7, 19, 31, 44, 57, 70, 83, 95].forEach((position, index) => {
-        const ornament = document.createElement('span');
-        ornament.className = 'garland-ornament';
-        ornament.style.setProperty('--x', `${position}%`);
-        ornament.style.setProperty('--ornament-color', ['#c93642', '#d5a63b', '#347e9a', '#c93642'][index % 4]);
-        ornament.style.setProperty('--delay', `${index * -0.32}s`);
-        garland.append(ornament);
+      const decorations = document.createElement('div');
+      decorations.className = 'christmas-decorations';
+      decorations.setAttribute('aria-hidden', 'true');
+      [
+        ['christmas-decoration tree-decoration tree-decoration-left', 'https://openclipart.org/image/2000px/325866'],
+        ['christmas-decoration presents-decoration', 'https://openclipart.org/image/2000px/281813'],
+        ['christmas-decoration tree-decoration tree-decoration-right', 'https://openclipart.org/image/2000px/325866']
+      ].forEach(([className, source]) => {
+        const decoration = document.createElement('img');
+        decoration.className = className;
+        decoration.src = source;
+        decoration.alt = '';
+        decoration.addEventListener('error', () => { decoration.hidden = true; }, { once: true });
+        decorations.append(decoration);
       });
-      layer.append(garland);
+      layer.append(decorations);
       mountEffect();
       return;
     }
