@@ -12,6 +12,20 @@ An endless calendar that highlights today's local date and tracks the year's pro
 - Records the latest automated update in `data/current-day.json`.
 - Runs as a static site with no build step or application dependencies.
 
+## Seasonal theme previews
+
+Holiday themes activate automatically on their calendar dates. To preview a theme at any time, add one of these values to the live calendar URL:
+
+| Theme | Preview URL |
+| --- | --- |
+| Christmas | <https://calendar.bedatty.com/?preview=christmas> |
+| New Year | <https://calendar.bedatty.com/?preview=new-year> |
+| Valentine's Day | <https://calendar.bedatty.com/?preview=valentines> |
+| Halloween | <https://calendar.bedatty.com/?preview=halloween> |
+| Easter | <https://calendar.bedatty.com/?preview=easter> |
+
+Preview mode changes the seasonal visuals and label; it does not change today's date or the calendar events.
+
 ## Local development
 
 Serve the repository root with a static file server:
