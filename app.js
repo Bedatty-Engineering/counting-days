@@ -10,7 +10,111 @@
   const eventView = document.querySelector('#event-view');
   const eventHeading = document.querySelector('#event-view-heading');
   const eventList = document.querySelector('#event-list');
+  const themeToggle = document.querySelector('#theme-toggle');
+  const themeIcon = document.querySelector('#theme-icon');
+  const themeLabel = document.querySelector('#theme-label');
+  const localeByLanguage = { en: 'en', pt: 'pt-BR' };
+  const copy = {
+    en: {
+      title: 'Every Day — an endless calendar', description: 'A calendar that follows every day, with no end date.',
+      ongoing: 'ongoing', todayIs: 'Today is', intro: 'One day at a time', headlineFirst: 'Time moves on.', headlineSecond: 'This calendar does too.',
+      lede: 'Every day has its place. Keep going; there is no last page.', dayOfYear: 'day of the year',
+      calendar: 'Your calendar', today: 'Today', previous: 'Previous month', next: 'Next month', weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      daysOfMonth: 'Days of the month', events: 'Events on this date', closeEvent: 'Close event details', todayLegend: 'today',
+      eventLegend: 'event · select date for details', footer: 'No required start. No ending in sight.', byline: 'A calendar by', live: 'Live calendar',
+      update: 'Last automated update:', dark: 'Dark mode', light: 'Light mode', language: 'Language', viewEvent: 'View event'
+    },
+    pt: {
+      title: 'Every Day — um calendário sem fim', description: 'Um calendário que acompanha todos os dias, sem data final.',
+      ongoing: 'em andamento', todayIs: 'Hoje é', intro: 'Um dia de cada vez', headlineFirst: 'O tempo passa.', headlineSecond: 'Este calendário também.',
+      lede: 'Cada dia tem seu lugar. Continue: não existe última página.', dayOfYear: 'dia do ano',
+      calendar: 'Seu calendário', today: 'Hoje', previous: 'Mês anterior', next: 'Próximo mês', weekdays: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+      daysOfMonth: 'Dias do mês', events: 'Eventos nesta data', closeEvent: 'Fechar detalhes do evento', todayLegend: 'hoje',
+      eventLegend: 'evento · selecione a data para ver detalhes', footer: 'Sem data de início obrigatória. Sem fim à vista.', byline: 'Um calendário da', live: 'Calendário ativo',
+      update: 'Última atualização automática:', dark: 'Tema escuro', light: 'Tema claro', language: 'Idioma', viewEvent: 'Ver evento'
+    }
+  };
+  function storedPreference(key, allowed, fallback) {
+    try {
+      const value = localStorage.getItem(key);
+      return allowed.includes(value) ? value : fallback;
+    } catch {
+      return fallback;
+    }
+  }
+  let language = storedPreference('counting-days-language', ['en', 'pt'], 'en');
+  let theme = storedPreference('counting-days-theme', ['light', 'dark'], 'light');
+  let lastSyncDate = null;
   let selectedEvent = null;
+
+  function text(value) {
+    return typeof value === 'string' ? value : value[language];
+  }
+
+  function applyTheme() {
+    document.documentElement.dataset.theme = theme;
+    document.querySelector('meta[name="theme-color"]').content = theme === 'dark' ? '#121820' : '#f3f5f8';
+    const nextThemeCopy = copy[language][theme === 'dark' ? 'light' : 'dark'];
+    themeLabel.textContent = nextThemeCopy;
+    themeIcon.textContent = theme === 'dark' ? '☀' : '☾';
+    themeToggle.setAttribute('aria-label', nextThemeCopy);
+    themeToggle.setAttribute('aria-pressed', String(theme === 'dark'));
+    try { localStorage.setItem('counting-days-theme', theme); } catch { /* Preferences remain usable without storage. */ }
+  }
+
+  function applyLanguage() {
+    const strings = copy[language];
+    const locale = localeByLanguage[language];
+    document.documentElement.lang = locale;
+    document.title = strings.title;
+    document.querySelector('meta[name="description"]').content = strings.description;
+    document.querySelector('meta[property="og:description"]').content = strings.description;
+    document.querySelector('#ongoing-label').textContent = strings.ongoing;
+    document.querySelector('#today-label').textContent = strings.todayIs;
+    document.querySelector('#intro-eyebrow').textContent = strings.intro;
+    document.querySelector('#headline-first').textContent = strings.headlineFirst;
+    document.querySelector('#headline-second').textContent = strings.headlineSecond;
+    document.querySelector('#page-lede').textContent = strings.lede;
+    document.querySelector('#progress-caption').textContent = strings.dayOfYear;
+    document.querySelector('#calendar-panel').setAttribute('aria-label', strings.calendar);
+    document.querySelector('#calendar-eyebrow').textContent = strings.calendar;
+    document.querySelector('#go-today').textContent = strings.today;
+    document.querySelector('#previous-month').setAttribute('aria-label', strings.previous);
+    document.querySelector('#next-month').setAttribute('aria-label', strings.next);
+    document.querySelector('#weekday-row').replaceChildren(...strings.weekdays.map((day) => {
+      const item = document.createElement('span'); item.textContent = day; return item;
+    }));
+    document.querySelector('#calendar-grid').setAttribute('aria-label', strings.daysOfMonth);
+    document.querySelector('#event-view-label').textContent = strings.events;
+    document.querySelector('#close-event-view').setAttribute('aria-label', strings.closeEvent);
+    document.querySelector('#today-legend').textContent = strings.todayLegend;
+    document.querySelector('#event-legend').textContent = strings.eventLegend;
+    document.querySelector('#footer-note').textContent = strings.footer;
+    document.querySelector('#byline-prefix').textContent = strings.byline;
+    document.querySelector('#sync-status').textContent = lastSyncDate ? `${strings.update} ${formatSyncDate(lastSyncDate)}` : strings.live;
+    document.querySelector('.language-switch').setAttribute('aria-label', strings.language);
+    document.querySelectorAll('[data-language]').forEach((button) => {
+      button.setAttribute('aria-pressed', String(button.dataset.language === language));
+    });
+    try { localStorage.setItem('counting-days-language', language); } catch { /* Preferences remain usable without storage. */ }
+    applyTheme();
+    updateDateCopy();
+    renderCalendar();
+    if (selectedEvent) renderEventView();
+  }
+
+  function formatSyncDate(date) {
+    return new Intl.DateTimeFormat(localeByLanguage[language], {
+      dateStyle: 'medium', timeStyle: 'short', timeZone: 'America/Sao_Paulo'
+    }).format(date);
+  }
+
+  function updateDateCopy() {
+    const locale = localeByLanguage[language];
+    todayLabel.textContent = new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'long' }).format(today);
+    document.querySelector('#year-caption').textContent = `${today.getFullYear()} · ${yearLength} ${language === 'pt' ? 'dias' : 'days'}`;
+    if (lastSyncDate) document.querySelector('#sync-status').textContent = `${copy[language].update} ${formatSyncDate(lastSyncDate)}`;
+  }
 
   function easterSunday(year) {
     const a = year % 19;
@@ -33,14 +137,14 @@
   function holidayFor(date) {
     const month = date.getMonth();
     const day = date.getDate();
-    if (month === 11 && day === 24) return { name: 'Christmas Eve', season: 'christmas', description: 'A day of anticipation and gathering before Christmas Day.' };
-    if (month === 11 && day === 25) return { name: 'Christmas Day', season: 'christmas', description: 'A Christian celebration of the birth of Jesus Christ.' };
-    if (month === 11 && day === 31) return { name: "New Year's Eve", season: 'new-year', description: 'The final day of the year, often marked with celebrations and fireworks.' };
-    if (month === 0 && day === 1) return { name: "New Year's Day", season: 'new-year', description: 'The first day of a new calendar year.' };
-    if (month === 1 && day === 14) return { name: "Valentine's Day", season: 'valentines', description: 'A celebration of love and affection.' };
-    if (month === 9 && day === 31) return { name: 'Halloween', season: 'halloween', description: 'A day for costumes, autumn traditions, and trick-or-treating.' };
+    if (month === 11 && day === 24) return { name: { en: 'Christmas Eve', pt: 'Véspera de Natal' }, season: 'christmas', description: { en: 'A day of anticipation and gathering before Christmas Day.', pt: 'Um dia de expectativa e encontros antes do Natal.' } };
+    if (month === 11 && day === 25) return { name: { en: 'Christmas Day', pt: 'Natal' }, season: 'christmas', description: { en: 'A Christian celebration of the birth of Jesus Christ.', pt: 'Celebração cristã do nascimento de Jesus Cristo.' } };
+    if (month === 11 && day === 31) return { name: { en: "New Year's Eve", pt: 'Véspera de Ano-Novo' }, season: 'new-year', description: { en: 'The final day of the year, often marked with celebrations and fireworks.', pt: 'O último dia do ano, geralmente celebrado com festas e fogos de artifício.' } };
+    if (month === 0 && day === 1) return { name: { en: "New Year's Day", pt: 'Ano-Novo' }, season: 'new-year', description: { en: 'The first day of a new calendar year.', pt: 'O primeiro dia de um novo ano.' } };
+    if (month === 1 && day === 14) return { name: { en: "Valentine's Day", pt: 'Dia de São Valentim' }, season: 'valentines', description: { en: 'A celebration of love and affection.', pt: 'Uma celebração do amor e do afeto.' } };
+    if (month === 9 && day === 31) return { name: { en: 'Halloween', pt: 'Halloween' }, season: 'halloween', description: { en: 'A day for costumes, autumn traditions, and trick-or-treating.', pt: 'Um dia de fantasias, tradições de outono e doces ou travessuras.' } };
     const easter = easterSunday(date.getFullYear());
-    if (month === easter.getMonth() && day === easter.getDate()) return { name: 'Easter Sunday', season: 'easter', description: 'A Christian celebration of the resurrection of Jesus Christ.' };
+    if (month === easter.getMonth() && day === easter.getDate()) return { name: { en: 'Easter Sunday', pt: 'Domingo de Páscoa' }, season: 'easter', description: { en: 'A Christian celebration of the resurrection of Jesus Christ.', pt: 'Celebração cristã da ressurreição de Jesus Cristo.' } };
     return null;
   }
 
@@ -51,7 +155,7 @@
       return;
     }
 
-    eventHeading.textContent = new Intl.DateTimeFormat('en', {
+    eventHeading.textContent = new Intl.DateTimeFormat(localeByLanguage[language], {
       weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
     }).format(selectedEvent.date);
     selectedEvent.events.forEach((event) => {
@@ -62,9 +166,9 @@
       marker.setAttribute('aria-hidden', 'true');
       const content = document.createElement('div');
       const title = document.createElement('h4');
-      title.textContent = event.name;
+      title.textContent = text(event.name);
       const description = document.createElement('p');
-      description.textContent = event.description;
+      description.textContent = text(event.description);
       content.append(title, description);
       entry.append(marker, content);
       eventList.append(entry);
@@ -87,7 +191,7 @@
   function showSeasonalEffect(holiday) {
     if (!holiday) return;
     document.body.dataset.season = holiday.season;
-    seasonalNote.textContent = holiday.name;
+    seasonalNote.textContent = text(holiday.name);
     seasonalNote.hidden = false;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -227,26 +331,27 @@
   }
 
   const previewThemes = new Map([
-    ['christmas', { name: 'Christmas theme preview', season: 'christmas' }],
-    ['new-year', { name: 'New Year theme preview', season: 'new-year' }],
-    ['valentines', { name: "Valentine's Day theme preview", season: 'valentines' }],
-    ['halloween', { name: 'Halloween theme preview', season: 'halloween' }],
-    ['easter', { name: 'Easter theme preview', season: 'easter' }]
+    ['christmas', { name: { en: 'Christmas theme preview', pt: 'Prévia do tema de Natal' }, season: 'christmas' }],
+    ['new-year', { name: { en: 'New Year theme preview', pt: 'Prévia do tema de Ano-Novo' }, season: 'new-year' }],
+    ['valentines', { name: { en: "Valentine's Day theme preview", pt: 'Prévia do tema de São Valentim' }, season: 'valentines' }],
+    ['halloween', { name: { en: 'Halloween theme preview', pt: 'Prévia do tema de Halloween' }, season: 'halloween' }],
+    ['easter', { name: { en: 'Easter theme preview', pt: 'Prévia do tema de Páscoa' }, season: 'easter' }]
   ]);
   const requestedPreview = new URLSearchParams(window.location.search).get('preview');
   showSeasonalEffect(previewThemes.get(requestedPreview) || holidayFor(today));
 
-  todayLabel.textContent = new Intl.DateTimeFormat('en', { weekday: 'long', day: 'numeric', month: 'long' }).format(today);
+  todayLabel.textContent = new Intl.DateTimeFormat(localeByLanguage[language], { weekday: 'long', day: 'numeric', month: 'long' }).format(today);
   const startOfYear = Date.UTC(today.getFullYear(), 0, 1);
   const todayUtc = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
   const dayNumber = Math.floor((todayUtc - startOfYear) / 86400000) + 1;
   const yearLength = new Date(today.getFullYear(), 1, 29).getDate() === 29 ? 366 : 365;
   dayOfYear.textContent = String(dayNumber).padStart(3, '0');
-  document.querySelector('#year-caption').textContent = `${today.getFullYear()} · ${yearLength} days`;
+  document.querySelector('#year-caption').textContent = `${today.getFullYear()} · ${yearLength} ${language === 'pt' ? 'dias' : 'days'}`;
   document.querySelector('#year-progress').style.width = `${dayNumber / yearLength * 100}%`;
 
   function renderCalendar() {
-    monthTitle.textContent = new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric' }).format(displayedMonth);
+    const locale = localeByLanguage[language];
+    monthTitle.textContent = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(displayedMonth);
     grid.replaceChildren();
     const first = new Date(displayedMonth.getFullYear(), displayedMonth.getMonth(), 1);
     const mondayOffset = (first.getDay() + 6) % 7;
@@ -261,13 +366,13 @@
       const isSelectedEvent = selectedEvent && date.getTime() === selectedEvent.date.getTime();
       cell.className = `day-cell${date.getMonth() !== displayedMonth.getMonth() ? ' outside-month' : ''}${isCurrent ? ' today' : ''}${holiday ? ` holiday holiday-${holiday.season}` : ''}${isSelectedEvent ? ' selected-event' : ''}`;
       cell.setAttribute('role', 'gridcell');
-      cell.setAttribute('aria-label', `${new Intl.DateTimeFormat('en', { dateStyle: 'full' }).format(date)}${holiday ? `, event: ${holiday.name}` : ''}`);
+      cell.setAttribute('aria-label', `${new Intl.DateTimeFormat(locale, { dateStyle: 'full' }).format(date)}${holiday ? `, ${copy[language].eventLegend.split(' ·')[0]}: ${text(holiday.name)}` : ''}`);
       if (isCurrent) cell.setAttribute('aria-current', 'date');
       const number = document.createElement(holiday ? 'button' : 'span');
       if (holiday) {
         number.type = 'button';
         number.className = 'day-number event-date';
-        number.setAttribute('aria-label', `View event: ${holiday.name}, ${new Intl.DateTimeFormat('en', { dateStyle: 'full' }).format(date)}`);
+        number.setAttribute('aria-label', `${copy[language].viewEvent}: ${text(holiday.name)}, ${new Intl.DateTimeFormat(locale, { dateStyle: 'full' }).format(date)}`);
         number.setAttribute('aria-controls', 'event-view');
         number.setAttribute('aria-expanded', isSelectedEvent ? 'true' : 'false');
         number.dataset.date = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
@@ -298,6 +403,16 @@
   document.querySelector('#close-event-view').addEventListener('click', () => {
     eventView.close();
   });
+  themeToggle.addEventListener('click', () => {
+    theme = theme === 'light' ? 'dark' : 'light';
+    applyTheme();
+  });
+  document.querySelectorAll('[data-language]').forEach((button) => {
+    button.addEventListener('click', () => {
+      language = button.dataset.language;
+      applyLanguage();
+    });
+  });
   eventView.addEventListener('close', () => {
     if (!selectedEvent) return;
     selectedEvent = null;
@@ -312,16 +427,9 @@
   fetch('data/current-day.json')
     .then((response) => response.ok ? response.json() : Promise.reject(new Error('Calendar data unavailable')))
     .then(({ updatedAt }) => {
-      const syncDate = new Date(updatedAt);
-      if (!Number.isNaN(syncDate.getTime())) {
-        const formattedDate = new Intl.DateTimeFormat('en', {
-          dateStyle: 'medium',
-          timeStyle: 'short',
-          timeZone: 'America/Sao_Paulo'
-        }).format(syncDate);
-        document.querySelector('#sync-status').textContent = `Last automated update: ${formattedDate}`;
-      }
+      lastSyncDate = new Date(updatedAt);
+      if (!Number.isNaN(lastSyncDate.getTime())) updateDateCopy();
     })
     .catch(() => {});
-  renderCalendar();
+  applyLanguage();
 })();

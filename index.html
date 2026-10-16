@@ -12,8 +12,8 @@
     <title>Every Day — an endless calendar</title>
     <link rel="canonical" href="https://calendar.bedatty.com/" />
     <link rel="icon" type="image/png" href="assets/bedatty-engineering.png" />
-    <link rel="stylesheet" href="styles.css?v=20261016-1" />
-    <script src="app.js?v=20261016-2" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20261016-2" />
+    <script src="app.js?v=20261016-3" defer></script>
   </head>
   <body>
     <main class="page-shell">
@@ -24,7 +24,17 @@
           <span class="brand-divider" aria-hidden="true"></span>
           <span class="project-name">Every Day</span>
         </a>
-        <span class="living-indicator"><i></i> ongoing</span>
+        <div class="header-actions">
+          <div class="language-switch" role="group" aria-label="Language">
+            <button class="language-option" type="button" data-language="en" aria-pressed="true">EN</button>
+            <button class="language-option" type="button" data-language="pt" aria-pressed="false">PT</button>
+          </div>
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false">
+            <span class="theme-icon" id="theme-icon" aria-hidden="true">☾</span>
+            <span id="theme-label">Dark mode</span>
+          </button>
+          <span class="living-indicator"><i aria-hidden="true"></i><span id="ongoing-label">ongoing</span></span>
+        </div>
       </header>
 
       <section class="intro" aria-labelledby="page-title">
@@ -34,22 +44,22 @@
           <p class="seasonal-note" id="seasonal-note" hidden></p>
         </div>
         <div class="intro-copy">
-          <p class="eyebrow">One day at a time</p>
-          <h1 id="page-title">Time moves on.<br /><span>This calendar does too.</span></h1>
-          <p class="lede">Every day has its place. Keep going; there is no last page.</p>
+          <p class="eyebrow" id="intro-eyebrow">One day at a time</p>
+          <h1 id="page-title"><span id="headline-first">Time moves on.</span><br /><span id="headline-second">This calendar does too.</span></h1>
+          <p class="lede" id="page-lede">Every day has its place. Keep going; there is no last page.</p>
         </div>
         <div class="year-progress" aria-label="Year progress">
           <span class="progress-number" id="day-of-year">—</span>
-          <span class="progress-caption">day of the year</span>
+          <span class="progress-caption" id="progress-caption">day of the year</span>
           <div class="progress-track"><i id="year-progress"></i></div>
           <span class="year-caption" id="year-caption">—</span>
         </div>
       </section>
 
-        <section class="calendar-panel" aria-label="Calendar">
+        <section class="calendar-panel" id="calendar-panel" aria-label="Calendar">
           <div class="calendar-heading">
             <div>
-              <p class="eyebrow">Your calendar</p>
+              <p class="eyebrow" id="calendar-eyebrow">Your calendar</p>
               <h2 id="month-title" aria-live="polite">—</h2>
             </div>
             <div class="calendar-controls">
@@ -58,14 +68,14 @@
               <button class="arrow-button" id="next-month" type="button" aria-label="Next month"><span aria-hidden="true">→</span></button>
             </div>
           </div>
-          <div class="weekday-row" aria-hidden="true">
+          <div class="weekday-row" id="weekday-row" aria-hidden="true">
             <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
           </div>
           <div class="calendar-grid" id="calendar-grid" role="grid" aria-label="Days of the month"></div>
           <dialog class="event-dialog" id="event-view" aria-labelledby="event-view-heading">
             <div class="event-view-heading">
               <div>
-                <p class="eyebrow">Events on this date</p>
+                <p class="eyebrow" id="event-view-label">Events on this date</p>
                 <h3 id="event-view-heading"></h3>
               </div>
               <button class="event-close" id="close-event-view" type="button" aria-label="Close event details">×</button>
@@ -74,14 +84,14 @@
           </dialog>
           <footer class="calendar-footer">
             <span class="calendar-legend">
-              <span><i class="legend-dot"></i> today</span>
-              <span><i class="legend-dot event-legend-dot"></i> event · select date for details</span>
+              <span><i class="legend-dot"></i> <span id="today-legend">today</span></span>
+              <span><i class="legend-dot event-legend-dot"></i> <span id="event-legend">event · select date for details</span></span>
             </span>
-            <span class="footer-note">No required start. No ending in sight.</span>
+            <span class="footer-note" id="footer-note">No required start. No ending in sight.</span>
           </footer>
         </section>
       <footer class="page-footer">
-        <span>A calendar by <a href="https://bedatty.com">Bedatty Engineering</a></span>
+        <span><span id="byline-prefix">A calendar by</span> <a href="https://bedatty.com">Bedatty Engineering</a></span>
         <span class="sync-status" id="sync-status">Live calendar</span>
       </footer>
     </main>
