@@ -13,7 +13,7 @@
     <link rel="canonical" href="https://calendar.bedatty.com/" />
     <link rel="icon" type="image/png" href="assets/bedatty-engineering.png" />
     <link rel="stylesheet" href="styles.css" />
-    <script src="app.js" defer></script>
+    <script src="app.js?v=20261016-1" defer></script>
   </head>
   <body>
     <main class="page-shell">
@@ -62,8 +62,21 @@
             <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
           </div>
           <div class="calendar-grid" id="calendar-grid" role="grid" aria-label="Days of the month"></div>
+          <dialog class="event-dialog" id="event-view" aria-labelledby="event-view-heading">
+            <div class="event-view-heading">
+              <div>
+                <p class="eyebrow">Events on this date</p>
+                <h3 id="event-view-heading"></h3>
+              </div>
+              <button class="event-close" id="close-event-view" type="button" aria-label="Close event details">×</button>
+            </div>
+            <div class="event-list" id="event-list"></div>
+          </dialog>
           <footer class="calendar-footer">
-            <span><i class="legend-dot"></i> today</span>
+            <span class="calendar-legend">
+              <span><i class="legend-dot"></i> today</span>
+              <span><i class="legend-dot event-legend-dot"></i> event · select date for details</span>
+            </span>
             <span class="footer-note">No required start. No ending in sight.</span>
           </footer>
         </section>
