@@ -226,7 +226,15 @@
     mountEffect();
   }
 
-  showSeasonalEffect(holidayFor(today));
+  const previewThemes = new Map([
+    ['christmas', { name: 'Christmas theme preview', season: 'christmas' }],
+    ['new-year', { name: 'New Year theme preview', season: 'new-year' }],
+    ['valentines', { name: "Valentine's Day theme preview", season: 'valentines' }],
+    ['halloween', { name: 'Halloween theme preview', season: 'halloween' }],
+    ['easter', { name: 'Easter theme preview', season: 'easter' }]
+  ]);
+  const requestedPreview = new URLSearchParams(window.location.search).get('preview');
+  showSeasonalEffect(previewThemes.get(requestedPreview) || holidayFor(today));
 
   todayLabel.textContent = new Intl.DateTimeFormat('en', { weekday: 'long', day: 'numeric', month: 'long' }).format(today);
   const startOfYear = Date.UTC(today.getFullYear(), 0, 1);
